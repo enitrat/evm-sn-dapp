@@ -1,7 +1,7 @@
 import React from 'react';
 import { sepolia, mainnet } from "@starknet-react/chains";
 import { MenuItem, MenuList } from '@chakra-ui/react';
-import { useWallet } from './hooks/useWallet';
+import { useWallet } from '../hooks/useWallet';
 
 export const ChainSwitcher: React.FC = () => {
   const { handleChainSwitch } = useWallet();

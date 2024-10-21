@@ -2,9 +2,9 @@ import { WalletConnectButton } from './WalletConnectButton'
 // import { ModeToggle } from './ModeToggle'
 import { Box, Flex, Button, HStack, Container, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react"
 import { Calculator, Home, Link, ChevronDown } from "lucide-react"
-import { useChain } from '../ChainContext'
+import { useChain } from '../context/ChainContext'
 import { sepolia, mainnet } from "@starknet-react/chains"
-import { ChainSwitcher } from '../ChainSwitcher'
+import { ChainSwitcher } from './ChainSwitcher'
 
 export function Navbar() {
   const { defaultChain, setDefaultChain } = useChain();

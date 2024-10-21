@@ -8,8 +8,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import CounterData from './components/CounterData'
 import { IncreaseCounter } from './components/IncreaseCounter'
 import { ChakraProvider } from '@chakra-ui/react';
-import { ChainProvider } from './ChainContext';
-import { useChain } from './ChainContext';
+import { ChainProvider } from './context/ChainContext';
+import { useChain } from './context/ChainContext';
 
 const queryClient = new QueryClient()
 

@@ -28,8 +28,9 @@ export const kakarotSepolia = /*#__PURE__*/ defineChain({
 
 
 export const config = createConfig({
-  chains: [kakarotSepolia],
+  chains: [mainnet, kakarotSepolia],
   transports: {
+    [mainnet.id]: http(),
     [kakarotSepolia.id]: http(),
   },
   ssr: true,
