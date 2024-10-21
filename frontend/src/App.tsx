@@ -8,25 +8,38 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import CounterData from './components/CounterData'
 import { IncreaseCounter } from './components/IncreaseCounter'
 import { ChakraProvider } from '@chakra-ui/react';
+import { ChainProvider } from './ChainContext';
+import { useChain } from './ChainContext';
 
 const queryClient = new QueryClient()
 
 function App() {
   return (
     <ChakraProvider>
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <StarknetProvider>
-          <div className="App">
-            <Navbar />
-            <main className="container mx-auto mt-8">
-              <Home />
-            </main>
-          </div>
-        </StarknetProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+      <ChainProvider>
+        <WagmiProvider config={config}>
+          <QueryClientProvider client={queryClient}>
+            <StarknetProviderWrapper>
+              <div className="App">
+                <Navbar />
+                <main className="container mx-auto mt-8">
+                  <Home />
+                </main>
+              </div>
+            </StarknetProviderWrapper>
+          </QueryClientProvider>
+        </WagmiProvider>
+      </ChainProvider>
     </ChakraProvider>
+  );
+}
+
+function StarknetProviderWrapper({ children }: { children: React.ReactNode }) {
+  const { defaultChain } = useChain();
+  return (
+    <StarknetProvider defaultChain={defaultChain}>
+      {children}
+    </StarknetProvider>
   );
 }
 

@@ -1,14 +1,10 @@
-'use client'
-
 import { useWallet } from '../hooks/useWallet'
 import { useTransaction } from '../hooks/useTransaction'
 import { useMultiChainExplorer } from '../hooks/useMultiChainExplorer'
 import { WalletConnectButton } from './WalletConnectButton'
 import { useCallback, useMemo } from 'react'
 import { Call } from 'starknet'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card"
-import { Button } from "./ui/button"
-import { Alert, AlertDescription, AlertTitle } from "./ui/alert"
+import { Box, Button, Card, CardBody, CardHeader, Heading, Text, VStack, Alert, AlertIcon, AlertTitle, AlertDescription, Link } from "@chakra-ui/react"
 import { PlusCircle, AlertCircle, CheckCircle2 } from "lucide-react"
 
 const CONTRACT_ADDRESS = '0x00193afab3e569d5ef5c45794c144075dd0053229fbcf4cf8719ae06e50dbd9d'
@@ -36,37 +32,28 @@ export function IncreaseCounter() {
   }, [sendTransaction, calls, connectedAddress]);
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card maxW="md" mx="auto">
       <CardHeader>
-        <CardTitle>Increase Counter</CardTitle>
-        <CardDescription>Increment the counter on the smart contract</CardDescription>
+        <Heading size="md">Increase Counter</Heading>
+        <Text>Increment the counter on the smart contract</Text>
       </CardHeader>
-      <CardContent>
+      <CardBody>
         {isConnected ? (
-          <div className="space-y-4">
+          <VStack spacing={4}>
             <Button
               onClick={handleIncreaseCounter}
-              disabled={transactionStatus.isPending}
-              className="w-full"
+              isDisabled={transactionStatus.isPending}
+              width="full"
+              leftIcon={<PlusCircle />}
             >
-              {transactionStatus.isPending ? (
-                <>
-                  <PlusCircle className="mr-2 h-4 w-4 animate-spin" />
-                  Increasing Counter...
-                </>
-              ) : (
-                <>
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  Increase Counter
-                </>
-              )}
+              {transactionStatus.isPending ? 'Increasing Counter...' : 'Increase Counter'}
             </Button>
             {transactionStatus && (
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium">Transaction Status:</h3>
+              <Box>
+                <Text fontWeight="medium" mb={2}>Transaction Status:</Text>
                 {transactionStatus.isPending && (
-                  <Alert>
-                    <AlertCircle className="h-4 w-4" />
+                  <Alert status="info">
+                    <AlertIcon as={AlertCircle} />
                     <AlertTitle>Processing</AlertTitle>
                     <AlertDescription>
                       Your transaction is being processed...
@@ -74,8 +61,8 @@ export function IncreaseCounter() {
                   </Alert>
                 )}
                 {transactionStatus.isError && (
-                  <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4" />
+                  <Alert status="error">
+                    <AlertIcon as={AlertCircle} />
                     <AlertTitle>Error</AlertTitle>
                     <AlertDescription>
                       {transactionStatus.error || "An error occurred while processing your transaction."}
@@ -83,24 +70,26 @@ export function IncreaseCounter() {
                   </Alert>
                 )}
                 {!transactionStatus.isPending && !transactionStatus.isError && transactionStatus.tx_hash && (
-                  <Alert variant="default">
-                    <CheckCircle2 className="h-4 w-4" />
+                  <Alert status="success">
+                    <AlertIcon as={CheckCircle2} />
                     <AlertTitle>Success</AlertTitle>
                     <AlertDescription>
-                      <a href={getTransactionUrl(transactionStatus.tx_hash.toString())} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700">View Transaction</a>
+                      <Link href={getTransactionUrl(transactionStatus.tx_hash.toString())} isExternal color="blue.500" _hover={{ color: "blue.700" }}>
+                        View Transaction
+                      </Link>
                     </AlertDescription>
                   </Alert>
                 )}
-              </div>
+              </Box>
             )}
-          </div>
+          </VStack>
         ) : (
-          <div className="text-center">
-            <p className="mb-4">Connect your wallet to increase the counter</p>
+          <Box textAlign="center">
+            <Text mb={4}>Connect your wallet to increase the counter</Text>
             <WalletConnectButton />
-          </div>
+          </Box>
         )}
-      </CardContent>
+      </CardBody>
     </Card>
   )
 }

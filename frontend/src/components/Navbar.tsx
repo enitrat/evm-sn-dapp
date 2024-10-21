@@ -1,33 +1,40 @@
 import { WalletConnectButton } from './WalletConnectButton'
 // import { ModeToggle } from './ModeToggle'
-import { Button } from "./ui/button"
-import { Calculator, Home, Link } from "lucide-react"
+import { Box, Flex, Button, HStack, Container, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react"
+import { Calculator, Home, Link, ChevronDown } from "lucide-react"
+import { useChain } from '../ChainContext'
+import { sepolia, mainnet } from "@starknet-react/chains"
+import { ChainSwitcher } from '../ChainSwitcher'
 
 export function Navbar() {
+  const { defaultChain, setDefaultChain } = useChain();
+
   return (
-    <nav className="border-b">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center">
-              <Button variant="ghost" className="text-lg font-semibold">
-                <Calculator className="mr-2 h-5 w-5" />
-                Kakounter
-              </Button>
-          </div>
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
-                <Button variant="ghost">
-                  <Home className="mr-2 h-4 w-4" />
-                  Home
-                </Button>
-            </div>
-          </div>
-          <div className="flex items-center space-x-4">
+    <Box as="nav" borderBottomWidth="1px">
+      <Container maxW="container.xl" px={{ base: 4, sm: 6, lg: 8 }}>
+        <Flex h="16" alignItems="center" justifyContent="space-between">
+          <Flex alignItems="center">
+            <Button variant="ghost" fontSize="lg" fontWeight="semibold" leftIcon={<Calculator />}>
+              Kakounter
+            </Button>
+          </Flex>
+          <HStack spacing={4} display={{ base: 'none', md: 'flex' }}>
+            <Button variant="ghost" leftIcon={<Home />}>
+              Home
+            </Button>
+            <Menu>
+              <MenuButton as={Button} rightIcon={<ChevronDown />}>
+                {defaultChain.name}
+              </MenuButton>
+              <ChainSwitcher />
+            </Menu>
+          </HStack>
+          <HStack spacing={4}>
             {/* <ModeToggle /> */}
             <WalletConnectButton />
-          </div>
-        </div>
-      </div>
-    </nav>
+          </HStack>
+        </Flex>
+      </Container>
+    </Box>
   )
 }

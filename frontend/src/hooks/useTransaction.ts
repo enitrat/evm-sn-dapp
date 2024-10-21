@@ -65,7 +65,5 @@ export function useTransaction(walletType: 'starknet' | 'evm' | null) {
     error: walletType === 'starknet' ? starknetTransaction.error?.message : evmError?.message,
   };
 
-  console.log(transactionStatus)
-
   return { sendTransaction, transactionStatus };
 }
