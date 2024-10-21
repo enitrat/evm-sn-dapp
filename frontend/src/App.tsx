@@ -1,37 +1,37 @@
-import React from 'react';
-import { StarknetProvider } from './StarknetProvider';
-import { Navbar } from './components/Navbar';
-import "./index.css"
-import { WagmiProvider } from 'wagmi';
-import { config } from './wagmi_config';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import CounterData from './components/CounterData'
-import { IncreaseCounter } from './components/IncreaseCounter'
-import { ChakraProvider } from '@chakra-ui/react';
-import { ChainProvider } from './context/ChainContext';
-import { useChain } from './context/ChainContext';
-import { BrowserRouter } from 'react-router-dom';
+import React from "react";
+import { StarknetProvider } from "./StarknetProvider";
+import { Navbar } from "./components/Navbar";
+import "./index.css";
+import { WagmiProvider } from "wagmi";
+import { config } from "./wagmi_config";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import CounterData from "./components/CounterData";
+import { IncreaseCounter } from "./components/IncreaseCounter";
+import { ChakraProvider } from "@chakra-ui/react";
+import { ChainProvider } from "./context/ChainContext";
+import { useChain } from "./context/ChainContext";
+import { BrowserRouter } from "react-router-dom";
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 function App() {
   return (
     <BrowserRouter basename={process.env.PUBLIC_URL}>
-    <ChakraProvider>
-      <ChainProvider>
-        <WagmiProvider config={config}>
-          <QueryClientProvider client={queryClient}>
-            <StarknetProviderWrapper>
-              <div className="App">
-                <Navbar />
-                <main className="container mx-auto mt-8">
-                  <Home />
-                </main>
-              </div>
-            </StarknetProviderWrapper>
-          </QueryClientProvider>
-        </WagmiProvider>
-      </ChainProvider>
+      <ChakraProvider>
+        <ChainProvider>
+          <WagmiProvider config={config}>
+            <QueryClientProvider client={queryClient}>
+              <StarknetProviderWrapper>
+                <div className="App">
+                  <Navbar />
+                  <main className="container mx-auto mt-8">
+                    <Home />
+                  </main>
+                </div>
+              </StarknetProviderWrapper>
+            </QueryClientProvider>
+          </WagmiProvider>
+        </ChainProvider>
       </ChakraProvider>
     </BrowserRouter>
   );
@@ -40,9 +40,7 @@ function App() {
 function StarknetProviderWrapper({ children }: { children: React.ReactNode }) {
   const { defaultChain } = useChain();
   return (
-    <StarknetProvider defaultChain={defaultChain}>
-      {children}
-    </StarknetProvider>
+    <StarknetProvider defaultChain={defaultChain}>{children}</StarknetProvider>
   );
 }
 
@@ -57,7 +55,7 @@ function Home() {
         </div>
       </div>
     </main>
-  )
+  );
 }
 
 export default App;

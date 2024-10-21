@@ -1,32 +1,52 @@
-import { useWallet } from '../hooks/useWallet'
-import { useTransaction } from '../hooks/useTransaction'
-import { useMultiChainExplorer } from '../hooks/useMultiChainExplorer'
-import { WalletConnectButton } from './WalletConnectButton'
-import { useCallback, useMemo } from 'react'
-import { Call } from 'starknet'
-import { Box, Button, Card, CardBody, CardHeader, Heading, Text, VStack, Alert, AlertIcon, AlertTitle, AlertDescription, Link } from "@chakra-ui/react"
-import { PlusCircle, AlertCircle, CheckCircle2 } from "lucide-react"
+import { useWallet } from "../hooks/useWallet";
+import { useTransaction } from "../hooks/useTransaction";
+import { useMultiChainExplorer } from "../hooks/useMultiChainExplorer";
+import { WalletConnectButton } from "./WalletConnectButton";
+import { useCallback, useMemo } from "react";
+import { Call } from "starknet";
+import {
+  Box,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Heading,
+  Text,
+  VStack,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+  Link,
+} from "@chakra-ui/react";
+import { PlusCircle, AlertCircle, CheckCircle2 } from "lucide-react";
 
-const CONTRACT_ADDRESS = '0x00193afab3e569d5ef5c45794c144075dd0053229fbcf4cf8719ae06e50dbd9d'
-const EVM_CONTRACT_ADDRESS = '0x0000000000000000000000000000000000075003'
+const CONTRACT_ADDRESS =
+  "0x00193afab3e569d5ef5c45794c144075dd0053229fbcf4cf8719ae06e50dbd9d";
+const EVM_CONTRACT_ADDRESS = "0x0000000000000000000000000000000000075003";
 
 export function IncreaseCounter() {
   const { isConnected, connectedAddress, walletType } = useWallet();
   const { sendTransaction, transactionStatus } = useTransaction(walletType);
   const { getTransactionUrl } = useMultiChainExplorer(walletType);
 
-  const calls: Call[] = useMemo(() => [{
-    contractAddress: CONTRACT_ADDRESS,
-    entrypoint: 'increase_counter',
-    calldata: [1, walletType === 'evm' ? 1 : 0],
-  }], [walletType]);
+  const calls: Call[] = useMemo(
+    () => [
+      {
+        contractAddress: CONTRACT_ADDRESS,
+        entrypoint: "increase_counter",
+        calldata: [1, walletType === "evm" ? 1 : 0],
+      },
+    ],
+    [walletType],
+  );
 
   const handleIncreaseCounter = useCallback(() => {
     if (connectedAddress) {
       sendTransaction(
         calls,
         EVM_CONTRACT_ADDRESS as `0x${string}`,
-        connectedAddress as `0x${string}`
+        connectedAddress as `0x${string}`,
       );
     }
   }, [sendTransaction, calls, connectedAddress]);
@@ -46,11 +66,15 @@ export function IncreaseCounter() {
               width="full"
               leftIcon={<PlusCircle />}
             >
-              {transactionStatus.isPending ? 'Increasing Counter...' : 'Increase Counter'}
+              {transactionStatus.isPending
+                ? "Increasing Counter..."
+                : "Increase Counter"}
             </Button>
             {transactionStatus && (
               <Box>
-                <Text fontWeight="medium" mb={2}>Transaction Status:</Text>
+                <Text fontWeight="medium" mb={2}>
+                  Transaction Status:
+                </Text>
                 {transactionStatus.isPending && (
                   <Alert status="info">
                     <AlertIcon as={AlertCircle} />
@@ -65,21 +89,31 @@ export function IncreaseCounter() {
                     <AlertIcon as={AlertCircle} />
                     <AlertTitle>Error</AlertTitle>
                     <AlertDescription>
-                      {transactionStatus.error || "An error occurred while processing your transaction."}
+                      {transactionStatus.error ||
+                        "An error occurred while processing your transaction."}
                     </AlertDescription>
                   </Alert>
                 )}
-                {!transactionStatus.isPending && !transactionStatus.isError && transactionStatus.tx_hash && (
-                  <Alert status="success">
-                    <AlertIcon as={CheckCircle2} />
-                    <AlertTitle>Success</AlertTitle>
-                    <AlertDescription>
-                      <Link href={getTransactionUrl(transactionStatus.tx_hash.toString())} isExternal color="blue.500" _hover={{ color: "blue.700" }}>
-                        View Transaction
-                      </Link>
-                    </AlertDescription>
-                  </Alert>
-                )}
+                {!transactionStatus.isPending &&
+                  !transactionStatus.isError &&
+                  transactionStatus.tx_hash && (
+                    <Alert status="success">
+                      <AlertIcon as={CheckCircle2} />
+                      <AlertTitle>Success</AlertTitle>
+                      <AlertDescription>
+                        <Link
+                          href={getTransactionUrl(
+                            transactionStatus.tx_hash.toString(),
+                          )}
+                          isExternal
+                          color="blue.500"
+                          _hover={{ color: "blue.700" }}
+                        >
+                          View Transaction
+                        </Link>
+                      </AlertDescription>
+                    </Alert>
+                  )}
               </Box>
             )}
           </VStack>
@@ -91,5 +125,5 @@ export function IncreaseCounter() {
         )}
       </CardBody>
     </Card>
-  )
+  );
 }

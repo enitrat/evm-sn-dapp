@@ -1,5 +1,5 @@
-import React, { createContext, useState, useContext } from 'react';
-import { Chain, sepolia, mainnet } from "@starknet-react/chains"
+import React, { createContext, useState, useContext } from "react";
+import { Chain, sepolia, mainnet } from "@starknet-react/chains";
 
 type AvailableChains = typeof sepolia | typeof mainnet;
 
@@ -10,9 +10,10 @@ interface ChainContextType {
 
 const ChainContext = createContext<ChainContextType | undefined>(undefined);
 
-export const ChainProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const ChainProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [defaultChain, setDefaultChain] = useState<Chain>(sepolia);
-
 
   return (
     <ChainContext.Provider value={{ defaultChain, setDefaultChain }}>
@@ -24,7 +25,7 @@ export const ChainProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 export const useChain = () => {
   const context = useContext(ChainContext);
   if (context === undefined) {
-    throw new Error('useChain must be used within a ChainProvider');
+    throw new Error("useChain must be used within a ChainProvider");
   }
   return context;
 };
