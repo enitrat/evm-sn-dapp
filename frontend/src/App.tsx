@@ -10,11 +10,13 @@ import { IncreaseCounter } from './components/IncreaseCounter'
 import { ChakraProvider } from '@chakra-ui/react';
 import { ChainProvider } from './context/ChainContext';
 import { useChain } from './context/ChainContext';
+import { BrowserRouter } from 'react-router-dom';
 
 const queryClient = new QueryClient()
 
 function App() {
   return (
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
     <ChakraProvider>
       <ChainProvider>
         <WagmiProvider config={config}>
@@ -30,7 +32,8 @@ function App() {
           </QueryClientProvider>
         </WagmiProvider>
       </ChainProvider>
-    </ChakraProvider>
+      </ChakraProvider>
+    </BrowserRouter>
   );
 }
 
