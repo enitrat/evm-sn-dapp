@@ -15,12 +15,20 @@ import { Calculator, Home, Link, ChevronDown } from "lucide-react";
 import { useChain } from "../context/ChainContext";
 import { sepolia, mainnet } from "@starknet-react/chains";
 import { ChainSwitcher } from "./ChainSwitcher";
+import { useColorModeValue } from "@chakra-ui/react";
 
 export function Navbar() {
   const { defaultChain, setDefaultChain } = useChain();
+  const bgColor = useColorModeValue("white", "gray.800");
+  const borderColor = useColorModeValue("gray.200", "gray.700");
 
   return (
-    <Box as="nav" borderBottomWidth="1px">
+    <Box
+      as="nav"
+      borderBottomWidth="1px"
+      borderColor={borderColor}
+      bg={bgColor}
+    >
       <Container maxW="container.xl" px={{ base: 4, sm: 6, lg: 8 }}>
         <Flex h="16" alignItems="center" justifyContent="space-between">
           <Flex alignItems="center">

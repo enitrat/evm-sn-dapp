@@ -1,6 +1,4 @@
 import { defineChain } from "viem";
-import { http, createConfig } from "wagmi";
-import { mainnet, sepolia } from "wagmi/chains";
 
 export const kakarotSepolia = /*#__PURE__*/ defineChain({
   id: 920637907288165,
@@ -22,13 +20,4 @@ export const kakarotSepolia = /*#__PURE__*/ defineChain({
     },
   },
   testnet: true,
-});
-
-export const config = createConfig({
-  chains: [mainnet, kakarotSepolia],
-  transports: {
-    [mainnet.id]: http(),
-    [kakarotSepolia.id]: http(),
-  },
-  ssr: true,
 });

@@ -1,36 +1,28 @@
 import React from "react";
 import { StarknetProvider } from "./StarknetProvider";
 import { Navbar } from "./components/Navbar";
-import "./index.css";
-import { WagmiProvider } from "wagmi";
-import { config } from "./wagmi_config";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import CounterData from "./components/CounterData";
 import { IncreaseCounter } from "./components/IncreaseCounter";
 import { ChakraProvider } from "@chakra-ui/react";
 import { ChainProvider } from "./context/ChainContext";
 import { useChain } from "./context/ChainContext";
 import { BrowserRouter } from "react-router-dom";
-
-const queryClient = new QueryClient();
+import { VStack, Heading, Flex, Box } from "@chakra-ui/react";
+import theme from "./theme";
 
 function App() {
   return (
-    <BrowserRouter basename={process.env.PUBLIC_URL}>
-      <ChakraProvider>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <ChakraProvider theme={theme}>
         <ChainProvider>
-          <WagmiProvider config={config}>
-            <QueryClientProvider client={queryClient}>
-              <StarknetProviderWrapper>
-                <div className="App">
-                  <Navbar />
-                  <main className="container mx-auto mt-8">
-                    <Home />
-                  </main>
-                </div>
-              </StarknetProviderWrapper>
-            </QueryClientProvider>
-          </WagmiProvider>
+          <StarknetProviderWrapper>
+            <div className="App">
+              <Navbar />
+              <main className="container mx-auto mt-8">
+                <Home />
+              </main>
+            </div>
+          </StarknetProviderWrapper>
         </ChainProvider>
       </ChakraProvider>
     </BrowserRouter>
@@ -46,15 +38,21 @@ function StarknetProviderWrapper({ children }: { children: React.ReactNode }) {
 
 function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm">
-        <h1 className="text-4xl font-bold mb-8">Shared Counter</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <CounterData />
-          <IncreaseCounter />
-        </div>
-      </div>
-    </main>
+    <VStack as="main" minH="100vh" justify="center" p={8}>
+      <Box maxW="4xl" w="full">
+        <Heading as="h1" size="2xl" mb={8} textAlign="center">
+          Shared Counter
+        </Heading>
+        <Flex direction={{ base: "column", md: "row" }} gap={8}>
+          <Box flex={1}>
+            <CounterData />
+          </Box>
+          <Box flex={1}>
+            <IncreaseCounter />
+          </Box>
+        </Flex>
+      </Box>
+    </VStack>
   );
 }
 
