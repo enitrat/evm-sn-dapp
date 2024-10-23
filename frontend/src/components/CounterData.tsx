@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useReadContract } from "@starknet-react/core";
+import { useContract, useReadContract } from "@starknet-react/core";
 import { CairoCustomEnum } from "starknet";
 import { ABI } from "../abis/abi";
 import {
@@ -26,56 +26,81 @@ import {
   FiRefreshCw,
   FiUser,
 } from "react-icons/fi";
+import { useColorModeValue } from "@chakra-ui/react";
 
 const CONTRACT_ADDRESS =
   "0x00193afab3e569d5ef5c45794c144075dd0053229fbcf4cf8719ae06e50dbd9d";
 
-const DataItem = ({ icon, title, value }) => (
-  <Box p={4} bg="gray.100" borderRadius="lg">
-    <Flex alignItems="center" gap={4}>
-      <Icon as={icon} boxSize={6} color="blue.500" />
-      <Box>
-        <Text fontSize="sm" fontWeight="medium" color="gray.600">
-          {title}
-        </Text>
-        <Text fontSize="2xl" fontWeight="bold">
-          {value}
-        </Text>
-      </Box>
-    </Flex>
-  </Box>
-);
+const DataItem = ({
+  icon,
+  title,
+  value,
+}: {
+  icon: any;
+  title: string;
+  value: string;
+}) => {
+  const bgColor = useColorModeValue("gray.100", "gray.700");
+  const textColor = useColorModeValue("gray.600", "gray.300");
+  const valueColor = useColorModeValue("gray.800", "white");
+
+  return (
+    <Box p={4} bg={bgColor} borderRadius="lg">
+      <Flex alignItems="center" gap={4}>
+        <Icon as={icon} boxSize={6} color="brand.500" />
+        <Box>
+          <Text fontSize="sm" fontWeight="medium" color={textColor}>
+            {title}
+          </Text>
+          <Text fontSize="2xl" fontWeight="bold" color={valueColor}>
+            {value}
+          </Text>
+        </Box>
+      </Flex>
+    </Box>
+  );
+};
 
 export default function CounterData() {
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const { data: counterData, refetch: refetchCounter } = useReadContract({
+  const { contract } = useContract({
     abi: ABI,
     address: CONTRACT_ADDRESS,
+  });
+  const { data: counterData, refetch: refetchCounter } = useReadContract({
+    abi: contract?.abi,
+    address: contract?.address,
     functionName: "get_counter",
+    args: [],
+    watch: true,
   });
 
   const { data: lastCallerData, refetch: refetchLastCaller } = useReadContract({
-    abi: ABI,
-    address: CONTRACT_ADDRESS,
+    abi: contract?.abi,
+    address: contract?.address,
     functionName: "get_last_caller",
+    args: [],
+    watch: true,
   });
 
   const { data: starknetCallersData, refetch: refetchStarknetCallers } =
     useReadContract({
-      abi: ABI,
-      address: CONTRACT_ADDRESS,
+      abi: contract?.abi,
+      address: contract?.address,
       functionName: "get_n_callers_by_type",
       args: [new CairoCustomEnum({ Starknet: {} })],
+      watch: true,
     });
 
   const { data: kakarotCallersData, refetch: refetchKakarotCallers } =
     useReadContract({
-      abi: ABI,
-      address: CONTRACT_ADDRESS,
+      abi: contract?.abi,
+      address: contract?.address,
       functionName: "get_n_callers_by_type",
       args: [new CairoCustomEnum({ Kakarot: {} })],
+      watch: true,
     });
 
   const refetchAll = async () => {
@@ -89,7 +114,6 @@ export default function CounterData() {
         refetchKakarotCallers(),
       ]);
     } catch (error) {
-      console.error("Error refetching data:", error);
       setError("Failed to fetch data. Please try again.");
     } finally {
       setIsLoading(false);
