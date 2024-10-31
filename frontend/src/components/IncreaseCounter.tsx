@@ -15,20 +15,36 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { PlusCircle, AlertCircle, CheckCircle2 } from "lucide-react";
-import { useAccount, useSendTransaction } from "@starknet-react/core";
+import {
+  InjectedConnector,
+  useAccount,
+  useSendTransaction,
+} from "@starknet-react/core";
 import { useColorModeValue } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { useExplorer } from "@starknet-react/core";
 
 const CONTRACT_ADDRESS =
   "0x00193afab3e569d5ef5c45794c144075dd0053229fbcf4cf8719ae06e50dbd9d";
 
 export function IncreaseCounter() {
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, connector } = useAccount();
+  const explorer = useExplorer();
+  const kakarotScanTxUrl = "https://sepolia.kakarotscan.org/tx/";
+
+  // Simple heuristic to determine if the wallets is a starknet wallet or an evm wallet
+  let walletType;
+  if (connector instanceof InjectedConnector) {
+    walletType = 0;
+  } else {
+    walletType = 1;
+  }
   const calls = [
     {
       contractAddress: CONTRACT_ADDRESS,
       entrypoint: "increase_counter",
       //TODO: restore starknet / evm diff
-      calldata: [1, 0],
+      calldata: [1, walletType],
     },
   ];
   const {
@@ -44,6 +60,18 @@ export function IncreaseCounter() {
       sendTransaction();
     }
   };
+
+  const [txUrl, setTxUrl] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (!data) return;
+    if (walletType === 0) {
+      setTxUrl(explorer.transaction(data!.transaction_hash));
+    } else {
+      setTxUrl(kakarotScanTxUrl + data!.transaction_hash);
+    }
+  }, [data]);
+
   const cardBgColor = useColorModeValue("white", "gray.800");
   const cardBorderColor = useColorModeValue("gray.200", "gray.600");
 
@@ -99,7 +127,7 @@ export function IncreaseCounter() {
                   <AlertTitle>Success</AlertTitle>
                   <AlertDescription>
                     <Link
-                      href={data.transaction_hash}
+                      href={txUrl}
                       isExternal
                       color="blue.500"
                       _hover={{ color: "blue.700" }}

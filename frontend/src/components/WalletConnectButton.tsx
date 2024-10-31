@@ -3,6 +3,7 @@ import {
   useDisconnect,
   useAccount,
   Connector,
+  InjectedConnector,
 } from "@starknet-react/core";
 import {
   Button,
@@ -43,7 +44,22 @@ function ConnectorModal({
   const buttonBorderColor = useColorModeValue("blue.300", "blue.500");
   const textColor = useColorModeValue("gray.800", "gray.200");
 
-  const ConnectorGroup = ({ title, connectors }) => (
+  //TODO: make KakarotConnector a public class.
+  const starknetConnectors = connectors.filter(
+    (connector) => connector instanceof InjectedConnector,
+  );
+  const kakarotConnectors = connectors.filter(
+    (connector) =>
+      !starknetConnectors.filter((c) => c.id === connector.id).length,
+  );
+
+  const ConnectorGroup = ({
+    title,
+    connectors,
+  }: {
+    title: string;
+    connectors: Connector[];
+  }) => (
     <Box
       borderWidth={1}
       borderRadius="md"
@@ -56,7 +72,7 @@ function ConnectorModal({
         {title}
       </Text>
       <Grid templateColumns="repeat(2, 1fr)" gap={4}>
-        {connectors.map((connector) => (
+        {connectors.map((connector: Connector) => (
           <Button
             key={connector.id}
             onClick={() => onConnect(connector)}
@@ -99,7 +115,14 @@ function ConnectorModal({
       <ModalCloseButton />
       <ModalBody>
         <Box maxH="400px" overflowY="auto" pr={4}>
-          <ConnectorGroup title="Starknet Wallets" connectors={connectors} />
+          <ConnectorGroup
+            title="Starknet Wallets"
+            connectors={starknetConnectors}
+          />
+          <ConnectorGroup
+            title="Kakarot Wallets"
+            connectors={kakarotConnectors}
+          />
         </Box>
       </ModalBody>
       <ModalFooter>
@@ -120,9 +143,13 @@ function WalletInfo({
   onDisconnect: () => void;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { connector } = useAccount();
   const shortenAddress = (addr: string) => {
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
   };
+
+  const walletType =
+    connector instanceof InjectedConnector ? "STARKNET" : "EVM";
 
   // Color mode values
   const buttonBg = useColorModeValue("gray.100", "gray.700");
@@ -143,7 +170,7 @@ function WalletInfo({
         <Wallet size={16} style={{ marginRight: "8px" }} />
         <Text fontWeight="medium">{shortenAddress(address)}</Text>
         <Badge ml={2} colorScheme="blue">
-          STARKNET
+          {walletType}
         </Badge>
       </Button>
 
@@ -181,7 +208,7 @@ function WalletInfo({
                 Wallet Type:
               </Text>
               <Badge colorScheme="blue" fontSize="sm" fontWeight="medium">
-                STARKNET
+                {walletType}
               </Badge>
             </Box>
           </ModalBody>
@@ -199,23 +226,6 @@ function WalletInfo({
     </>
   );
 }
-
-const WalletOption = ({ connector, onClick }: WalletOptionProps) => {
-  const bgColor = useColorModeValue("gray.100", "gray.700");
-  const hoverBgColor = useColorModeValue("gray.200", "gray.600");
-
-  return (
-    <Button
-      width="100%"
-      justifyContent="flex-start"
-      bg={bgColor}
-      _hover={{ bg: hoverBgColor }}
-      onClick={onClick}
-    >
-      {/* ... existing button content */}
-    </Button>
-  );
-};
 
 export function WalletConnectButton(): JSX.Element {
   const { connect, connectors } = useConnect();
