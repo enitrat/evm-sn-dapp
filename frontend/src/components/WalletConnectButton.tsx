@@ -102,7 +102,7 @@ function ConnectorModal({
               textAlign="center"
               color={textColor}
             >
-              {connector.id}
+              {connector.name}
             </Text>
           </Button>
         ))}
