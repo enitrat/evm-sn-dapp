@@ -69,7 +69,7 @@ export function IncreaseCounter() {
       setTxUrl(explorer.transaction(data!.transaction_hash));
     } else {
       //TODO: fix returned data to be akin to InvokeTransactionResult
-      setTxUrl(kakarotScanTxUrl + data);
+      setTxUrl(kakarotScanTxUrl + data!.transaction_hash);
     }
   }, [data]);
 
